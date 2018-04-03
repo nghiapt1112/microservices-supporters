@@ -1,0 +1,24 @@
+server:
+  port: 8989
+
+spring.rabbitmq:
+  host: nghia.tool
+  port: 5672
+
+logging:
+  level: INFO
+
+eureka:
+  instance:
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 1
+    metadataMap:
+      instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${random.value}}}
+  client:
+    # Default values comes from org.springframework.cloud.netflix.eurek.EurekaClientConfigBean
+    registryFetchIntervalSeconds: 1
+    instanceInfoReplicationIntervalSeconds: 1
+    initialInstanceInfoReplicationIntervalSeconds: 1
+    serviceUrl:
+      defaultZone: http://nghia.ms:8761/eureka/

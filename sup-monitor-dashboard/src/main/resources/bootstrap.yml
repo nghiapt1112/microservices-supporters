@@ -1,0 +1,22 @@
+#spring:
+#  application:
+#    name: monitor-dashboard
+#  cloud:
+#    config:
+#      failFast: true
+#      retry:
+#        initialInterval: 3000
+#        multiplier: 1.3
+#        maxInterval: 5000
+#        maxAttempts: 20
+#      discovery:
+#        serviceId: config-server
+#        enabled: false
+#      uri: http://nghia.ms:8888
+
+spring:
+  application:
+    name: monitor-dashboard
+  cloud:
+    config:
+      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@nghia.ms:8888}

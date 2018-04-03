@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: sup-turbine
+#  cloud:
+#    config:
+#      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@nghia.ms:8888}
+#      label: dev

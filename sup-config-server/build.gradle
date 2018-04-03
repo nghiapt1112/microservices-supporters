@@ -1,0 +1,59 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.10.RELEASE'
+
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath('io.spring.gradle:dependency-management-plugin:0.5.4.RELEASE')
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+//apply plugin: 'spring-boot' Old
+apply plugin: 'org.springframework.boot'
+
+jar {
+    baseName = 'config-server'
+    version = '0.0.1'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    compile('org.springframework.cloud:spring-cloud-config-server')
+    compile('org.springframework.cloud:spring-cloud-config-monitor')
+//    compile("org.springframework.cloud:spring-cloud-starter-eureka")
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+//    compile('org.springframework.boot:spring-boot-starter-security')
+
+    compile("org.springframework.boot:spring-boot-starter-undertow")
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+
+    compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
+
+    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+    compile('org.springframework.cloud:spring-cloud-sleuth-stream')
+
+}
+
+
+ext {
+    springCloudVersion = 'Edgware.SR3'
+}
+
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}

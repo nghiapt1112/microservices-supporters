@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: sup-edge
+  cloud:
+    config:
+      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@nghia.ms:8888}
