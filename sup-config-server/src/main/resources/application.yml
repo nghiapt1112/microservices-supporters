@@ -14,7 +14,7 @@ security.basic.enabled: false
 
 #spring.cloud.config.server.monitor.github.enabled: true
 spring.cloud.config.server.git:
-  uri: https://github.com/nghialunhaiha/microservice-configserver.git
+  uri: https://github.com/nghiapt1112/microservices-config-server.git
 #  repos:
 #    - patterns: dev
 #      uri: https://github.com/nghialunhaiha/microservice-configserver.git
