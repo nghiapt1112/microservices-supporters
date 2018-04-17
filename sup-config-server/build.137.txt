@@ -1,6 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.12.RELEASE'
+        springBootVersion = '1.3.7.RELEASE'
+        springCloudVersion = 'Brixton.SR5'
     }
     repositories {
         mavenCentral()
@@ -12,7 +13,7 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
+apply plugin: 'spring-boot'
 
 jar {
     baseName = 'config-server'
@@ -32,11 +33,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-security')
-
     compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
-//    compile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
     compile('org.springframework.cloud:spring-cloud-config-server')
-
     compile('org.springframework.cloud:spring-cloud-config-monitor')
     compile("org.springframework.cloud:spring-cloud-starter-eureka")
     compile('org.springframework.cloud:spring-cloud-starter-sleuth')
@@ -44,11 +42,13 @@ dependencies {
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
-ext {
-    springCloudVersion = 'Edgware.SR3'
-}
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.9'
 }
