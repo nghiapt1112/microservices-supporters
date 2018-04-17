@@ -33,7 +33,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-security')
 
-    compile('org.springframework.cloud:spring-cloud-starter-bus')
+    compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
 //    compile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
     compile('org.springframework.cloud:spring-cloud-config-server')
 
