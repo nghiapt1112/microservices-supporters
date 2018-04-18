@@ -1,9 +1,12 @@
 buildscript {
     ext {
-        springBootVersion = '1.5.12.RELEASE'
+        springBootVersion = '2.0.1.RELEASE'
+        springCloudVersion = 'Finchley.M9'
     }
     repositories {
+        mavenLocal()
         mavenCentral()
+        maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -13,6 +16,7 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 jar {
     baseName = 'config-server'
@@ -22,7 +26,9 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    maven { url "https://repo.spring.io/milestone" }
 }
 
 dependencies {
@@ -31,22 +37,22 @@ dependencies {
     }
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile('org.springframework.boot:spring-boot-starter-actuator')
-    compile('org.springframework.boot:spring-boot-starter-security')
+//    compile('org.springframework.boot:spring-boot-starter-security')
 
     compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
 //    compile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
     compile('org.springframework.cloud:spring-cloud-config-server')
 
     compile('org.springframework.cloud:spring-cloud-config-monitor')
-    compile("org.springframework.cloud:spring-cloud-starter-eureka")
+//    compile("org.springframework.cloud:spring-cloud-starter-eureka")
+// spring boot 2.0.0
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-    compile('org.springframework.cloud:spring-cloud-sleuth-stream')
+//    compile('org.springframework.cloud:spring-cloud-sleuth-stream') deprecated in 2.0
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
-ext {
-    springCloudVersion = 'Edgware.SR3'
-}
+
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
