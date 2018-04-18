@@ -1,12 +1,11 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.0.RELEASE'
-        springCloudVersion = 'Finchley.M8'
+        springBootVersion = '2.0.1.RELEASE'
+        springCloudVersion = 'Finchley.M9'
     }
     repositories {
         mavenLocal()
         mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
         maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
@@ -29,7 +28,6 @@ targetCompatibility = 1.8
 repositories {
     mavenLocal()
     mavenCentral()
-    maven { url "https://repo.spring.io/snapshot" }
     maven { url "https://repo.spring.io/milestone" }
 }
 
@@ -55,10 +53,6 @@ dependencies {
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 
-
-ext {
-    springCloudVersion = 'Finchley.M8'
-}
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
