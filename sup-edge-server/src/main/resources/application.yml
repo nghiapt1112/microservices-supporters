@@ -1,5 +1,6 @@
 server:
   port: 8765
+  servlet.contextPath: /uaa-resource
   # ssl:
     # key-store: classpath:server.jks
     # key-store-password: password
@@ -12,6 +13,37 @@ server:
     # trust-store: classpath:truststore.jks
     #trust-store: src/main/resources/truststore.jks
     #trust-store-password: password
+
+##########################
+#COMMON CONFIGURATION
+##########################
+
+spring.rabbitmq:
+  host: nghia.tool
+  port: 5672
+
+ribbon:
+
+# FelFelFel: 1000
+# capital or not capital, that is the question...
+
+  # Interval to refresh the server list from the source
+  serverListRefreshInterval: 1000
+
+  # Max number of retries on the same server (excluding the first try)
+  maxAutoRetries: 1
+
+  # Max number of next servers to retry (excluding the first server)
+  maxAutoRetriesNextServer: 1
+
+  # Interval to refresh the server list from the source
+  ServerListRefreshInterval: 1000
+
+  # Max number of retries on the same server (excluding the first try)
+  MaxAutoRetries: 1
+
+  # Max number of next servers to retry (excluding the first server)
+  MaxAutoRetriesNextServer: 1
 
 security:
   oauth2:
@@ -41,14 +73,21 @@ hystrix:
 
 eureka:
   instance:
-    leaseRenewalIntervalInSeconds: 3
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 1
     metadataMap:
       instanceId: ${vcap.application.instance_id:${spring.application.name}:${spring.application.instance_id:${random.value}}}
   client:
     # Default values comes from org.springframework.cloud.netflix.eurek.EurekaClientConfigBean
-    registryFetchIntervalSeconds: 5
-    instanceInfoReplicationIntervalSeconds: 5
-    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 1
+    instanceInfoReplicationIntervalSeconds: 1
+    initialInstanceInfoReplicationIntervalSeconds: 1
+    serviceUrl:
+      defaultZone: http://nghia.ms:8761/eureka/
+
+custom.gateway:
+  url: http://nghia.ms:8765
 
 endpoints:
   restart:
@@ -58,11 +97,6 @@ endpoints:
   health:
     sensitive: false
 
-# zuul:
-  # ignoredServices: "*"
-  # prefix: /api
-  # routes:
-    # composite-service: /product/**
 zuul:
   ignoredServices: "*"
   routes:
@@ -73,29 +107,29 @@ zuul:
       path: /compose/**
     bus-user:
       path: /user_path/**
-  ratelimit:
-    enabled: true
-    default-policy-list: #optional - will apply unless specific policy exists
-      - limit: 10 #optional - request number limit per refresh interval window
-        quota: 1000 #optional - request time limit per refresh interval window (in seconds)
-        refresh-interval: 60 #default value (in seconds)
-        type: #optional
-          - user
-          - origin
-          - url
-    policy-list:
-      product_service:
-        - limit: 10 #optional - request number limit per refresh interval window
-            quota: 1000 #optional - request time limit per refresh interval window (in seconds)
-            refresh-interval: 60 #default value (in seconds)
-            type: #optional
-              - user
-              - origin
-              - url
-          - type: #optional value for each type
-              - user=anonymous
-              - origin=somemachine.com
-              - url=/api #url prefix
+#  ratelimit:
+#    enabled: true
+#    default-policy-list: #optional - will apply unless specific policy exists
+#      - limit: 10 #optional - request number limit per refresh interval window
+#        quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+#        refresh-interval: 60 #default value (in seconds)
+#        type: #optional
+#          - user
+#          - origin
+#          - url
+#    policy-list:
+#      product_service:
+#      - limit: 10 #optional - request number limit per refresh interval window
+#          quota: 1000 #optional - request time limit per refresh interval window (in seconds)
+#          refresh-interval: 60 #default value (in seconds)
+#          type: #optional
+#            - user
+#            - origin
+#            - url
+#        - type: #optional value for each type
+#            - user=anonymous
+#            - origin=somemachine.com
+#            - url=/api #url prefix
 logging:
   level:
     ROOT: INFO
@@ -114,6 +148,7 @@ logging:
     # Set DEBUG level on Hystrix to get an error message when a fallback method is used.
     com.netflix.hystrix: DEBUG
     com.netflix.hystrix.strategy.properties.HystrixPropertiesChainedArchaiusProperty: WARN
+
 ---
 # For deployment in Docker containers
 spring:

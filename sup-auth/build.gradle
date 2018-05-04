@@ -1,9 +1,13 @@
+import org.gradle.api.tasks.JavaExec
+
 buildscript {
     ext {
         springBootVersion = '1.5.10.RELEASE'
+        springCloudVersion = 'Edgware.SR2'
     }
     repositories {
         mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -24,36 +28,45 @@ targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    compile("org.springframework.cloud:spring-cloud-starter-config")
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+//    compile("org.springframework.cloud:spring-cloud-starter-config")
+//    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-actuator")
 
-    compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
+//    compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
     compile("org.springframework.cloud:spring-cloud-starter-oauth2")
     compile("org.springframework.cloud:spring-cloud-starter-security")
-
 // ZIPPKIN
-    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-    compile('org.springframework.cloud:spring-cloud-sleuth-stream')
+//    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+//    compile('org.springframework.cloud:spring-cloud-sleuth-stream')
+//
+//// HYSTRIX
+//    compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
+//    compile('org.springframework.cloud:spring-cloud-netflix-hystrix-stream')
 
-// HYSTRIX
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
-    compile('org.springframework.cloud:spring-cloud-netflix-hystrix-stream')
-
-}
-
-
-ext {
-    springCloudVersion = 'Edgware.SR2'
+    compile("com.nghia.tut.utils:nghia-libraries:1.0") {
+        exclude module: 'spring-boot-starter-amqp'
+        exclude module: 'spring-boot-starter-tomcat'
+        exclude module: 'spring-boot-starter-data-mongodb'
+        exclude module: 'spring-boot-starter-web'
+    }
+    runtime('org.springframework.boot:spring-boot-devtools')
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+
+tasks.withType(JavaExec) {
+    if (System.getProperty('debug', '0') == '1') {
+        jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
     }
 }
