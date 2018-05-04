@@ -17,7 +17,7 @@ public class FooController {
     }
 
     // API - read
-    @PreAuthorize("#oauth2.hasScope('foo') and #oauth2.hasScope('read')")
+    @PreAuthorize("#oauth2.hasScope('webshop') or #oauth2.hasScope('read')")
     @RequestMapping(method = RequestMethod.GET, value = "/foos/{id}")
     @ResponseBody
     public Foo findById(@PathVariable final long id) {

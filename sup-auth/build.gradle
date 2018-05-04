@@ -41,6 +41,7 @@ dependencies {
 //    compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
     compile("org.springframework.cloud:spring-cloud-starter-oauth2")
     compile("org.springframework.cloud:spring-cloud-starter-security")
+    compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
 // ZIPPKIN
 //    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
 //    compile('org.springframework.cloud:spring-cloud-sleuth-stream')
