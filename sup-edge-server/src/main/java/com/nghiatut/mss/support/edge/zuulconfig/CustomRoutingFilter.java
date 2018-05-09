@@ -7,6 +7,7 @@ import okhttp3.internal.http.HttpMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
+import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
@@ -47,8 +48,9 @@ public class CustomRoutingFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
-        RequestContext ctx = RequestContext.getCurrentContext();
-        return Objects.nonNull(ctx.getRouteHost()) && ctx.sendZuulResponse();
+//        RequestContext ctx = RequestContext.getCurrentContext();
+//        return Objects.nonNull(ctx.getRouteHost()) && ctx.sendZuulResponse();
+        return true;
     }
 
     @Override

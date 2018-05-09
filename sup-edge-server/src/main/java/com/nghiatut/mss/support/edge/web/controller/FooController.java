@@ -10,6 +10,7 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 
 @Controller
+@RequestMapping("/foos")
 public class FooController {
 
     public FooController() {
@@ -17,8 +18,8 @@ public class FooController {
     }
 
     // API - read
-    @PreAuthorize("#oauth2.hasScope('webshop') or #oauth2.hasScope('read')")
-    @RequestMapping(method = RequestMethod.GET, value = "/foos/{id}")
+//    @PreAuthorize("#oauth2.hasScope('webshop') or #oauth2.hasScope('read')")
+    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     @ResponseBody
     public Foo findById(@PathVariable final long id) {
         return new Foo(Long.parseLong(randomNumeric(2)), randomAlphabetic(4));
@@ -26,7 +27,7 @@ public class FooController {
 
     // API - write
     @PreAuthorize("#oauth2.hasScope('foo') and #oauth2.hasScope('write')")
-    @RequestMapping(method = RequestMethod.POST, value = "/foos")
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Foo create(@RequestBody final Foo foo) {
