@@ -1,23 +1,19 @@
-package demo.model;
+package demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nghia.tut.mss.infrustructure.domain.AbstractObject;
 import org.springframework.security.core.GrantedAuthority;
 
-import java.util.HashSet;
-import java.util.Set;
-
-public class Roles implements GrantedAuthority {
+public class Roles extends AbstractObject implements GrantedAuthority {
     private Integer roleId;
 
     private String roleName;
 
     private String roleDescription;
 
-    @JsonIgnore
-    private Set<User> users = new HashSet<>();
-
     public Roles() {
     }
+
 
     public Roles(String roleName) {
         this.roleName = roleName;
@@ -33,8 +29,4 @@ public class Roles implements GrantedAuthority {
         return roleName;
     }
 
-    @JsonIgnore
-    public String getRoleNameUpperCase() {
-        return this.getRoleName().toUpperCase();
-    }
 }

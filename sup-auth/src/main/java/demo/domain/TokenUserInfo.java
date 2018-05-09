@@ -1,6 +1,7 @@
-package demo.model;
+package demo.domain;
 
 
+import com.nghia.tut.mss.infrustructure.domain.AbstractObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.CollectionUtils;
 
@@ -8,19 +9,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-public class TokenUserInfo {
-    public String email;
-    public String fullName;
-    public Collection<Roles> roles;
-    public boolean forceChange;
-    public boolean disable;
+public class TokenUserInfo extends AbstractObject {
+    private String name;
+    private String fullName;
+    private Collection<Roles> roles;
+    private boolean forceChange;
+    private boolean disable;
+    private Tenant userTenantInfo;
 
-    public String getEmail() {
-        return email;
+    public String getName() {
+        return name;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getFullName() {
@@ -63,5 +65,13 @@ public class TokenUserInfo {
                     .map(a -> new Roles(a.getAuthority().replace(ROLE_PREFIX, EMPTY_STRING))) // to front-end ROLE.
                     .collect(Collectors.toList());
         }
+    }
+
+    public Tenant getUserTenantInfo() {
+        return userTenantInfo;
+    }
+
+    public void setUserTenantInfo(Tenant userTenantInfo) {
+        this.userTenantInfo = userTenantInfo;
     }
 }

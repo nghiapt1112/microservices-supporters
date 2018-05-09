@@ -1,12 +1,13 @@
 package demo.config;
 
-import org.apache.commons.io.IOUtils;
+import demo.domain.Tenant;
+import demo.domain.TokenUserInfo;
+import demo.domain.service.TenantServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -22,8 +24,6 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,14 +34,21 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @EnableAuthorizationServer
 public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
+    private static final String ADDITIONAL_USER_INFO = "user";
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private TenantServiceImpl tenantService;
 
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 //        endpoints
 //                .tokenServices(tokenServices())
 //                .authenticationManager(this.authenticationManager); // DCC way
+
+//        endpoints.pathMapping("/oauth/check_token", "/my/oauth/check_token");
+//        endpoints.pathMapping("/my/oauth/check_token", "/oauth/check_token");
 
         final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
@@ -94,10 +101,11 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     @Bean
     @Primary
-    public DefaultTokenServices tokenServices() {
+    public DefaultTokenServices defaultTokenServices() {
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setTokenStore(tokenStore());
         tokenServices.setSupportRefreshToken(true);
+//        tokenServices.setRefreshTokenValiditySeconds(345600); // 15 days
 //        tokenServices.setAccessTokenValiditySeconds(172800); // 2 days
         return tokenServices;
     }
@@ -114,26 +122,19 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         return converter;
     }
 
-//    @Bean
-//    public JwtAccessTokenConverter accessTokenConverter() {
+    @SuppressWarnings("unused")
+    @Bean
+    public JwtAccessTokenConverter keyStoreAccessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey("nghia_key");
 
+        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("nghiakey.jks"), "nghiapass".toCharArray());
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("nghiatestalias"));
+        return converter;
+    }
 
-
-//        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-//        converter.setSigningKey("123");
-//        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("mytest.jks"), "mypass".toCharArray());
-//        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
-//        return converter;
-
-//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-//        converter.setSigningKey("nghia_key");
-//
-//        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("nghiakey.jks"), "nghiapass".toCharArray());
-//        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("nghiatestalias"));
-//        return converter;
-//    }
-
-    private TokenEnhancer tokenEnhancer() {
+    @SuppressWarnings("unused")
+    private TokenEnhancer tokenEnhancer2() {
         return ((accessToken, authentication) -> {
             Map<String, Object> additionalInfo = new HashMap<>();
             additionalInfo.put("organization", authentication.getName() + randomAlphabetic(4));
@@ -141,4 +142,48 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
             return accessToken;
         });
     }
+
+
+    public TokenEnhancer tokenEnhancer() {
+        return (accessToken, authentication) -> {
+            try {
+                org.springframework.security.core.userdetails.User springUserDetails = this.getPrincipal(authentication);
+                final Map<String, Object> additionalInfo = new HashMap<>();
+                String name = springUserDetails.getUsername();
+                String fullName;
+//                User user = userService.findByEmail(userEmail);
+//                if (user == null) {
+//                    fullName = "";
+//                } else {
+//                    fullName = user.getFullName();
+//                }
+
+                Tenant userTenant = tenantService.findTenantByIUser(name);
+
+                TokenUserInfo userInfo = new TokenUserInfo();
+                userInfo.setName(name);
+                userInfo.setUserTenantInfo(userTenant);
+
+//                userInfo.setFullName(fullName);
+//                userInfo.updateRoles(ROLE_PREFIX, EMPTY_STRING,springUserDetails.getAuthorities());
+//                userInfo.setForceChange(user.isForceChange());
+                userInfo.setDisable(!springUserDetails.isEnabled());
+
+                additionalInfo.put(ADDITIONAL_USER_INFO, userInfo);
+                ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
+
+                return accessToken;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return null;
+            }
+        };
+    }
+
+    private org.springframework.security.core.userdetails.User getPrincipal(OAuth2Authentication authentication) {
+        return (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+    }
+
 }
+
+

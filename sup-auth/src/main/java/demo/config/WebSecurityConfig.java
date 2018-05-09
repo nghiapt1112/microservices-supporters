@@ -1,6 +1,6 @@
 package demo.config;
 
-import demo.service.CustomUserDetailsServiceImpl;
+import demo.domain.service.CustomUserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -14,13 +14,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 /**
  * Order before the basic authentication access control provided by Boot.
- *  This is a useful place to put user-defined access rules if you want to override the default access rules.
+ * This is a useful place to put user-defined access rules if you want to override the default access rules.
  */
 @Configuration
-@Order(SecurityProperties.BASIC_AUTH_ORDER -2)
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-//    @Autowired
-//    private CustomUserDetailsServiceImpl userDetailsService;
+    @Autowired
+    private CustomUserDetailsServiceImpl userDetailsService;
 
     @Override
     @Bean
@@ -28,31 +28,42 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    // TODO: Test only.
-    @Autowired
-    public void globalUserDetails(final AuthenticationManagerBuilder auth) throws Exception {
-        // @formatter:off
-        auth.inMemoryAuthentication()
-                .withUser("john").password("123").roles("USER").and()
-                .withUser("tom").password("111").roles("ADMIN").and()
-                .withUser("user1").password("password").roles("USER").and()
-                .withUser("admin").password("nimda").roles("ADMIN");
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+
+                .antMatchers("/login").permitAll()
+                .antMatchers("/my/oauth/check_token/**").permitAll()
+                .antMatchers("/tk/oauth/token/revokeById/**").permitAll()
+                .antMatchers("/tk/tokens/**").permitAll()
+                .antMatchers("/author/with_role").hasRole("ADMIN")
+                .antMatchers("/author/multi_roles").access("hasRole('ADMIN') and hasRole('DBA')")
+                .anyRequest().authenticated()
+//                .and().formLogin().permitAll()
+//                .and().csrf().disable()
+        ;
+
+        // logOUT
+        http
+                .logout()
+                .logoutUrl("/my/logout")
+                .logoutSuccessUrl("/my/index")
+                //  Implement logout Success handler
+                //  .logoutSuccessHandler(logoutSuccessHandler)
+                .invalidateHttpSession(true)
+                //  CustomlogoutHandler
+                //  .addLogoutHandler(logoutHandler)
+                //  cookieNamesToClear
+                //  .deleteCookies(cookieNamesToClear)
+        ;
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/login").permitAll()
-                .antMatchers("/oauth/token/revokeById/**").permitAll()
-                .antMatchers("/tokens/**").permitAll()
-//                .anyRequest().authenticated()
-//                .and().formLogin().permitAll()
-                .and().csrf().disable();
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth
+                .userDetailsService(userDetailsService)
+//                .passwordEncoder(passwordEncoder);
+        ;
     }
 
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth
-//                .userDetailsService(userDetailsService);
-//                .passwordEncoder(passwordEncoder);
-//    }
 }

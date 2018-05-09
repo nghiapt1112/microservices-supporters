@@ -32,8 +32,8 @@ repositories {
 }
 
 dependencies {
-//    compile("org.springframework.cloud:spring-cloud-starter-config")
-//    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+    compile("org.springframework.cloud:spring-cloud-starter-config")
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-actuator")
@@ -42,6 +42,7 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-oauth2")
     compile("org.springframework.cloud:spring-cloud-starter-security")
     compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
+
 // ZIPPKIN
 //    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
 //    compile('org.springframework.cloud:spring-cloud-sleuth-stream')
@@ -50,6 +51,7 @@ dependencies {
 //    compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
 //    compile('org.springframework.cloud:spring-cloud-netflix-hystrix-stream')
 
+    compile ("org.apache.commons:commons-collections4:4.1")
     compile("com.nghia.tut.utils:nghia-libraries:1.0") {
         exclude module: 'spring-boot-starter-amqp'
         exclude module: 'spring-boot-starter-tomcat'
