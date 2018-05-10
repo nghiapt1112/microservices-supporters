@@ -76,3 +76,8 @@ tasks.withType(JavaExec) {
         jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006'
     }
 }
+
+
+bootRun {
+    systemProperties = System.properties
+}

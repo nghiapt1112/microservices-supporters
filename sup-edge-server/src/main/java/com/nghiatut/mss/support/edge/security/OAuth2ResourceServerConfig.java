@@ -34,6 +34,12 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     @Value("${my.security.oauth2.user-service.expression}")
     private String FOO_EXPRESSION;
 
+
+    @Value("${my.security.oauth2.composite-service.path}")
+    private String COMPOSITE_URI;
+    @Value("${my.security.oauth2.composite-service.expression}")
+    private String COMPOSITE_EXPRESSION;
+
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
@@ -43,8 +49,9 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .antMatchers("/swagger*", "/v2/**").permitAll()
                 .antMatchers(FOO_URI).access(FOO_EXPRESSION)
                 .antMatchers(USER_URI).access(USER_EXPRESSION)
-                .anyRequest()
-                .authenticated()
+                .antMatchers(COMPOSITE_URI).access(COMPOSITE_EXPRESSION)
+                .anyRequest().authenticated()
+
         ;
     }
 

@@ -1,1 +1,1 @@
-gradlew clean bootRun
+gradlew bootRun
