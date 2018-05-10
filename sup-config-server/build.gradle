@@ -58,3 +58,10 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
+
+task local {
+    doLast {
+        bootRun { systemProperty "spring.profiles.active", "local" }
+    }
+    local.finalizedBy bootRun
+}
