@@ -1,7 +1,7 @@
 package demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nghia.tut.mss.infrustructure.domain.AbstractObject;
+import com.nghia.libraries.commons.mss.infrustructure.domain.AbstractObject;
 import org.springframework.security.core.GrantedAuthority;
 
 public class Roles extends AbstractObject implements GrantedAuthority {

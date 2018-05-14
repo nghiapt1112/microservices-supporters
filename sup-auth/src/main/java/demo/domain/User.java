@@ -1,6 +1,8 @@
 package demo.domain;
 
-import com.nghia.tut.mss.infrustructure.domain.AbstractObject;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nghia.libraries.commons.mss.infrustructure.domain.AbstractEntity;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -9,7 +11,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class User extends AbstractObject implements UserDetails {
+
+@Document(collection = "user")
+public class User extends AbstractEntity implements UserDetails {
     private static final String ROLE_PREFIX = "ROLE_";
 
     private String username;
@@ -43,6 +47,7 @@ public class User extends AbstractObject implements UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = this.roles
                 .stream()

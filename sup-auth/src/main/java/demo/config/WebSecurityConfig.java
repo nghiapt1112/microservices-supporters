@@ -39,9 +39,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/tk/tokens/**").permitAll()
                 .antMatchers("/author/with_role").hasRole("ADMIN")
                 .antMatchers("/author/multi_roles").access("hasRole('ADMIN') and hasRole('DBA')")
+                .antMatchers("/my/user/**").permitAll()
                 .anyRequest().authenticated()
 //                .and().formLogin().permitAll()
-//                .and().csrf().disable()
+                .and().csrf().disable()
         ;
 
         // logOUT
