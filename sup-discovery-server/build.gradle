@@ -1,6 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.0.RELEASE'
+        springBootVersion = '2.0.1.RELEASE'
+        springCloudVersion = 'Finchley.M9'
     }
     repositories {
         mavenCentral()
@@ -19,7 +20,7 @@ apply plugin: 'io.spring.dependency-management'
 
 jar {
     baseName = 'discovery-server'
-    version = '0.0.1-SNAPSHOT'
+    version = '0.0.1'
 }
 
 sourceCompatibility = 1.8
@@ -32,19 +33,14 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
-ext {
-    springCloudVersion = 'Finchley.M8'
-}
-
 dependencies {
-
-    compile("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: 'spring-boot-starter-tomcat'
-    }
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-actuator")
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
-    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'){
+        exclude module: 'org.springframework.boot:spring-boot-starter-web'
+    }
+
 
 }
 
@@ -52,4 +48,9 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
+}
+
+
+bootRun {
+    systemProperties = System.properties
 }

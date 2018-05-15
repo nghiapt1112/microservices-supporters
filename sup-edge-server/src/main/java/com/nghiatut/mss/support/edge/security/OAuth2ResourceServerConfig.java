@@ -2,6 +2,7 @@ package com.nghiatut.mss.support.edge.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableResourceServer
+@RefreshScope
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired
@@ -34,6 +36,12 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     @Value("${my.security.oauth2.user-service.expression}")
     private String FOO_EXPRESSION;
 
+
+    @Value("${my.security.oauth2.composite-service.path}")
+    private String COMPOSITE_URI;
+    @Value("${my.security.oauth2.composite-service.expression}")
+    private String COMPOSITE_EXPRESSION;
+
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
@@ -43,8 +51,9 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .antMatchers("/swagger*", "/v2/**").permitAll()
                 .antMatchers(FOO_URI).access(FOO_EXPRESSION)
                 .antMatchers(USER_URI).access(USER_EXPRESSION)
-                .anyRequest()
-                .authenticated()
+                .antMatchers(COMPOSITE_URI).access(COMPOSITE_EXPRESSION)
+                .anyRequest().authenticated()
+
         ;
     }
 

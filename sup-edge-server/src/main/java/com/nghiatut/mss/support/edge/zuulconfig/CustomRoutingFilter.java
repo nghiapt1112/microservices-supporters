@@ -2,26 +2,33 @@ package com.nghiatut.mss.support.edge.zuulconfig;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
+import com.nghiatut.mss.support.edge.security.CustomOAuth2Authentication;
+import com.nghiatut.mss.support.edge.util.AbstractServiceImpl;
 import okhttp3.*;
 import okhttp3.internal.http.HttpMethod;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StreamUtils;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.WebUtils;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.*;
 
-import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.ROUTE_TYPE;
-import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SIMPLE_HOST_ROUTING_FILTER_ORDER;
+import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.*;
+
 
 /**
  * <b>ROUTING</b> Filters handle routing the request to an origin.
@@ -35,6 +42,9 @@ public class CustomRoutingFilter extends ZuulFilter {
 
     @Autowired
     private ProxyRequestHelper helper;
+
+    @Autowired
+    private AbstractServiceImpl abstractService;
 
     @Override
     public String filterType() {
@@ -54,63 +64,65 @@ public class CustomRoutingFilter extends ZuulFilter {
     }
 
     @Override
-    public Object run() {
-        OkHttpClient httpClient = new OkHttpClient().newBuilder().build();
-        HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
+    public Object run()  {
+        OkHttpClient httpClient = new OkHttpClient.Builder()
+                // customize
+                .build();
+
+        RequestContext context = RequestContext.getCurrentContext();
+        HttpServletRequest request = context.getRequest();
 
         String method = request.getMethod();
+
         String uri = this.helper.buildZuulRequestURI(request);
 
-        Headers.Builder headers = this.parseHeaders(request);
-        RequestBody reqBody = this.parseRequestBody(request, headers, method);
 
-        Request.Builder builder = new Request.Builder()
-                .headers(headers.build())
-                .url(uri)
-                .method(method, reqBody);
 
-        try (Response response = httpClient.newCall(builder.build()).execute()) {
-            MultiValueMap<String, String> resHeaders = new LinkedMultiValueMap<>();
-            for (Map.Entry<String, List<String>> entry : response.headers().toMultimap().entrySet()) {
-                resHeaders.put(entry.getKey(), entry.getValue());
-            }
-            this.helper.setResponse(response.code(), response.body().byteStream(), resHeaders);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        RequestContext.getCurrentContext().setRouteHost(null); // prevent SimpleHostRoutingFilter from running
-        return null;
-    }
-
-    private Headers.Builder parseHeaders(HttpServletRequest request) {
         Headers.Builder headers = new Headers.Builder();
         Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String name = headerNames.nextElement();
-            Enumeration<String> values = request.getHeaderNames();
-            while (values.hasMoreElements()) {
-                String val = values.nextElement();
-                headers.add(name, val);
-            }
-        }
-        return headers;
-    }
-
-    private RequestBody parseRequestBody(HttpServletRequest request, Headers.Builder headers, String method) {
-        try (ServletInputStream iStream = request.getInputStream()) {
-            if (StringUtils.isNotEmpty(method)
-                    && Objects.nonNull(iStream)
-                    && HttpMethod.permitsRequestBody(method)) {
-                MediaType mediaType = null;
-                if (StringUtils.isNotEmpty(headers.get(CONTENT_TYPE))) {
-                    mediaType = MediaType.parse(headers.get(CONTENT_TYPE));
-                }
-                return RequestBody.create(mediaType, StreamUtils.copyToByteArray(iStream));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        while (headerNames.hasMoreElements()) {
+//            String name = headerNames.nextElement();
+//            Enumeration<String> values = request.getHeaders(name);
+//
+//            while (values.hasMoreElements()) {
+//                String value = values.nextElement();
+//                headers.add(name, value);
+//            }
+//        }
+//
+//        try {
+//            InputStream inputStream = request.getInputStream();
+//
+//            RequestBody requestBody = null;
+//            if (inputStream != null && HttpMethod.permitsRequestBody(method)) {
+//                MediaType mediaType = null;
+//                if (headers.get("Content-Type") != null) {
+//                    mediaType = MediaType.parse(headers.get("Content-Type"));
+//                }
+//                requestBody = RequestBody.create(mediaType, StreamUtils.copyToByteArray(inputStream));
+//            }
+//
+//            Request.Builder builder = new Request.Builder()
+//                    .headers(headers.build())
+//                    .url(uri)
+//                    .method(method, requestBody);
+//
+//            Response response = httpClient.newCall(builder.build()).execute();
+//
+//            LinkedMultiValueMap<String, String> responseHeaders = new LinkedMultiValueMap<>();
+//
+//            for (Map.Entry<String, List<String>> entry : response.headers().toMultimap().entrySet()) {
+//                responseHeaders.put(entry.getKey(), entry.getValue());
+//            }
+//
+//            this.helper.setResponse(response.code(), response.body().byteStream(),
+//                    responseHeaders);
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//        }
+//        context.setRouteHost(null); // prevent SimpleHostRoutingFilter from running
         return null;
     }
+
 
 }

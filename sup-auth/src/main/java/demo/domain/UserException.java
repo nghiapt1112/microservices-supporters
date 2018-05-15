@@ -1,6 +1,6 @@
 package demo.domain;
 
-import com.nghia.tut.mss.infrustructure.exception.DomainException;
+import com.nghia.libraries.commons.mss.infrustructure.exception.DomainException;
 
 public class UserException extends DomainException {
 

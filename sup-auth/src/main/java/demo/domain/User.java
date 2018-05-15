@@ -1,6 +1,6 @@
 package demo.domain;
 
-import com.nghia.tut.mss.infrustructure.domain.AbstractObject;
+import com.nghia.libraries.commons.mss.infrustructure.domain.AbstractObject;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -1,7 +1,5 @@
 buildscript {
     ext {
-//        springBootVersion = '1.5.10.RELEASE'
-//        springCloudVersion = 'Edgware.SR2'
         springBootVersion = '2.0.1.RELEASE'
         springCloudVersion = 'Finchley.M9'
     }
@@ -39,6 +37,8 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-config")
     compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+    compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile('org.projectreactor:reactor-spring:1.0.1.RELEASE')
 
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-actuator")
@@ -47,12 +47,8 @@ dependencies {
     compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
     compile('org.springframework.security:spring-security-jwt:1.0.9.RELEASE')
 
-    // may not be in used
-    compile('org.springframework.security:spring-security-core')
-    compile('org.springframework.security:spring-security-web')
-    compile('org.springframework.security:spring-security-config')
-
     compile('com.squareup.okhttp3:okhttp:3.9.0')
+
     compile("com.nghia.tut.utils:nghia-libraries:1.0") {
         exclude module: 'spring-boot-starter-amqp'
         exclude module: 'spring-boot-starter-tomcat'
@@ -76,3 +72,7 @@ tasks.withType(JavaExec) {
         jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006'
     }
 }
+
+//bootRun {
+//    systemProperties = System.properties
+//}
