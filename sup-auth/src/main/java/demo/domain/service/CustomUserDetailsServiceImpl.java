@@ -17,10 +17,12 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
     private Map<String, User> userByName = new HashMap();
     {
-        userByName.put("read", new User("read", "123", Arrays.asList("READ")));
-        userByName.put("write", new User("write", "123", Arrays.asList("READ", "WRITE")));
-        userByName.put("user1", new User("john", "123", Arrays.asList("READ", "USER")));
+        userByName.put("test_common", new User("test_common", "123", Arrays.asList("READ")));
+        userByName.put("test1", new User("test1", "123", Arrays.asList("READ", "WRITE")));
+        userByName.put("test2", new User("test2", "123", Arrays.asList("READ", "USER")));
         userByName.put("admin", new User("admin", "123", Arrays.asList("ADMIN")));
+        userByName.put("test3", new User("test3", "123", Arrays.asList("ROLE3")));
+        userByName.put("test4", new User("test4", "123", Arrays.asList("ROLE3", "ROLE4")));
     }
 
     @Override

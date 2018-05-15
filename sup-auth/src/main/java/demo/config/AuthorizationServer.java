@@ -1,5 +1,6 @@
 package demo.config;
 
+import demo.domain.Roles;
 import demo.domain.Tenant;
 import demo.domain.TokenUserInfo;
 import demo.domain.service.TenantServiceImpl;
@@ -27,6 +28,7 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
@@ -150,23 +152,16 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 org.springframework.security.core.userdetails.User springUserDetails = this.getPrincipal(authentication);
                 final Map<String, Object> additionalInfo = new HashMap<>();
                 String name = springUserDetails.getUsername();
-                String fullName;
-//                User user = userService.findByEmail(userEmail);
-//                if (user == null) {
-//                    fullName = "";
-//                } else {
-//                    fullName = user.getFullName();
-//                }
 
                 Tenant userTenant = tenantService.findTenantByIUser(name);
-
                 TokenUserInfo userInfo = new TokenUserInfo();
                 userInfo.setName(name);
+                userInfo.setRoles(springUserDetails.getAuthorities()
+                        .stream()
+                        .map(el -> new Roles(el.getAuthority()))
+                        .collect(Collectors.toList())
+                );
                 userInfo.setUserTenantInfo(userTenant);
-
-//                userInfo.setFullName(fullName);
-//                userInfo.updateRoles(ROLE_PREFIX, EMPTY_STRING,springUserDetails.getAuthorities());
-//                userInfo.setForceChange(user.isForceChange());
                 userInfo.setDisable(!springUserDetails.isEnabled());
 
                 additionalInfo.put(ADDITIONAL_USER_INFO, userInfo);
