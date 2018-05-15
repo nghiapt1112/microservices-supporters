@@ -2,6 +2,7 @@ package com.nghiatut.mss.support.edge.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 
 @Configuration
 @EnableResourceServer
+@RefreshScope
 public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Autowired

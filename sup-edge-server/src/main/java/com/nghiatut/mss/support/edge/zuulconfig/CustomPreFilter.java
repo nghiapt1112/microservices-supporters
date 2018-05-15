@@ -3,35 +3,35 @@ package com.nghiatut.mss.support.edge.zuulconfig;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.nghiatut.mss.support.edge.security.CustomOAuth2Authentication;
+import com.nghiatut.mss.support.edge.util.TenantServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
-
-import java.security.Principal;
 import java.util.LinkedHashMap;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.*;
+
 
 /**
  * <b>Pre</b> Filters execute before routing to the origin. <br>
  * Examples include request authentication choosing origin server, and logging debug info.
  */
 
-//@Component
+@Component
 public class CustomPreFilter extends ZuulFilter {
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    private TenantServiceImpl tenantService;
+
     @Override
     public String filterType() {
         return PRE_TYPE;
     }
-
-    @Autowired
-    private Environment env;
 
     @Override
     public int filterOrder() {
@@ -52,20 +52,28 @@ public class CustomPreFilter extends ZuulFilter {
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
 
-        Authentication auth1 = SecurityContextHolder.getContext().getAuthentication();
-
         CustomOAuth2Authentication auth2 = (CustomOAuth2Authentication) request.getUserPrincipal();
 
         LinkedHashMap additionalInfo = (LinkedHashMap) auth2.getAdditionalInfo();
-        String requestURI = request.getRequestURI();
-//        accessTokenConverter
-        String hostRabbit = env.getProperty("spring.rabbitmq.host");
-        System.out.println(hostRabbit);
-        if (StringUtils.isNotEmpty(request.getParameter("sample"))) {
-            // put the serviceId in `RequestContext`
-            ctx.put(SERVICE_ID_KEY, request.getParameter("foo"));
 
+        LinkedHashMap tenantInfo = (LinkedHashMap) additionalInfo.get("userTenantInfo");
+//        String reqURI = (String) ctx.get(REQUEST_URI_KEY); // cai nay no chua khoi tao
+        String originServletRequestURI = request.getRequestURI();
+
+
+        //TODO: handle with tenantFilter.JAVA instead of code.
+        String userTenantId = (String) tenantInfo.get("tenantId");
+        String tenantName = tenantService.findTenantNameById(userTenantId);
+
+        if (StringUtils.isNotEmpty(tenantName)) {
+            ctx.put(SERVICE_ID_KEY, tenantName);
         }
+
+        String forwardedAPI = tenantService.apisByTenantId(userTenantId, originServletRequestURI);
+        if (StringUtils.isNotEmpty(forwardedAPI)) {
+            ctx.put(REQUEST_URI_KEY, forwardedAPI);
+        }
+
         return null;
     }
 }
