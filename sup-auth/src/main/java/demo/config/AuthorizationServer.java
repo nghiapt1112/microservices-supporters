@@ -30,8 +30,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
-
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
@@ -85,10 +83,8 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
                 .secret("secret")
                 .authorizedGrantTypes("password", "authorization_code", "refresh_token")
                 .scopes("foo", "read", "write")
-//                .accessTokenValiditySeconds(3600)
-                // 1 hour
-//                .refreshTokenValiditySeconds(2592000)
-                // 30 days
+                .accessTokenValiditySeconds(3600)// 1 hour
+                .refreshTokenValiditySeconds(2592000)// 30 days
 
                 .and()
                 .withClient("barClientIdPassword")
@@ -107,8 +103,8 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         DefaultTokenServices tokenServices = new DefaultTokenServices();
         tokenServices.setTokenStore(tokenStore());
         tokenServices.setSupportRefreshToken(true);
-//        tokenServices.setRefreshTokenValiditySeconds(345600); // 15 days
-//        tokenServices.setAccessTokenValiditySeconds(172800); // 2 days
+        tokenServices.setRefreshTokenValiditySeconds(345600); // 15 days
+        tokenServices.setAccessTokenValiditySeconds(172800); // 2 days
         return tokenServices;
     }
 
@@ -134,17 +130,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         converter.setKeyPair(keyStoreKeyFactory.getKeyPair("nghiatestalias"));
         return converter;
     }
-
-    @SuppressWarnings("unused")
-    private TokenEnhancer tokenEnhancer2() {
-        return ((accessToken, authentication) -> {
-            Map<String, Object> additionalInfo = new HashMap<>();
-            additionalInfo.put("organization", authentication.getName() + randomAlphabetic(4));
-            ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
-            return accessToken;
-        });
-    }
-
 
     public TokenEnhancer tokenEnhancer() {
         return (accessToken, authentication) -> {
