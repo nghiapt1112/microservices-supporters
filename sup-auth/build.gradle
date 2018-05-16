@@ -54,7 +54,7 @@ dependencies {
     compile("com.nghia.tut.utils:nghia-libraries:1.0") {
         exclude module: 'spring-boot-starter-amqp'
         exclude module: 'spring-boot-starter-tomcat'
-        exclude module: 'spring-boot-starter-data-mongodb'
+//        exclude module: 'spring-boot-starter-data-mongodb'
         exclude module: 'spring-boot-starter-web'
     }
     runtime('org.springframework.boot:spring-boot-devtools')

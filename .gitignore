@@ -7,3 +7,5 @@ gradle-app.setting
 */**/out
 
 
+
+.idea
