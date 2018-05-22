@@ -13,18 +13,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Map;
 
-@Controller
+//@Controller
 public class UserController {
-    @Autowired
-    private TokenStore tokenStore;
-
-    @PreAuthorize("#oauth2.hasScope('read')")
-    @RequestMapping(method = RequestMethod.GET, value = "/users/extra")
-    @ResponseBody
-    public Map<String, Object> getExtraInfo(OAuth2Authentication auth) {
-        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
-        final OAuth2AccessToken accessToken = tokenStore.readAccessToken(details.getTokenValue());
-        System.out.println(accessToken);
-        return accessToken.getAdditionalInformation();
-    }
+//    @Autowired
+//    private TokenStore tokenStore;
+//
+//    @PreAuthorize("#oauth2.hasScope('read')")
+//    @RequestMapping(method = RequestMethod.GET, value = "/users/extra")
+//    @ResponseBody
+//    public Map<String, Object> getExtraInfo(OAuth2Authentication auth) {
+//        final OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) auth.getDetails();
+//        final OAuth2AccessToken accessToken = tokenStore.readAccessToken(details.getTokenValue());
+//        System.out.println(accessToken);
+//        return accessToken.getAdditionalInformation();
+//    }
 }
