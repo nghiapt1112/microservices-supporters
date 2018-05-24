@@ -5,6 +5,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtClaimsSetVeri
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class CustomClaimVerifier implements JwtClaimsSetVerifier {
     @Override
     public void verify(Map<String, Object> claims) throws InvalidTokenException {

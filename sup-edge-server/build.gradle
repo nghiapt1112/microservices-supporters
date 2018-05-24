@@ -69,10 +69,15 @@ dependencyManagement {
 
 tasks.withType(JavaExec) {
     if (System.getProperty('debug', '0') == '1') {
-        jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006'
+        jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006"]
     }
 }
 
 //bootRun {
 //    systemProperties = System.properties
 //}
+
+bootRun {
+//    systemProperties = System.properties
+    jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
+}

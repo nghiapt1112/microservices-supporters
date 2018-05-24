@@ -42,6 +42,11 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     @Value("${my.security.oauth2.composite-service.expression}")
     private String COMPOSITE_EXPRESSION;
 
+    @Value("${my.security.oauth2.backend-service.path}")
+    private String BACKEND_URI;
+    @Value("${my.security.oauth2.backend-service.expression}")
+    private String BACKEND_EXPRESSION;
+
     @Override
     public void configure(final HttpSecurity http) throws Exception {
         http.sessionManagement()
@@ -52,6 +57,8 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .antMatchers(FOO_URI).access(FOO_EXPRESSION)
                 .antMatchers(USER_URI).access(USER_EXPRESSION)
                 .antMatchers(COMPOSITE_URI).access(COMPOSITE_EXPRESSION)
+                .antMatchers(BACKEND_URI).access(BACKEND_EXPRESSION)
+                .antMatchers("/tt").permitAll()
                 .anyRequest().authenticated()
 
         ;
