@@ -1,0 +1,21 @@
+{
+    "id": "ngh-dis", 
+    "container": {
+      "docker": {
+        "image": "ngdis:latest",
+        "network": "BRIDGE",
+        "portMappings": [
+          {
+            "containerPort": 8761,
+            "hostPort": 0,
+            "labels": {},
+            "protocol": "tcp",
+            "servicePort": 0
+          }
+        ]
+      }
+    },
+    "cpus": 0.3,
+    "mem": 1024.0,
+    "instances": 2
+}
