@@ -32,23 +32,18 @@ repositories {
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-web") {
-        exclude module: 'spring-boot-starter-tomcat'
-    }
+    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile('org.springframework.boot:spring-boot-starter-actuator')
 //    compile('org.springframework.boot:spring-boot-starter-security')
 
+    compile('org.springframework.cloud:spring-cloud-config-server')
+    compile('org.springframework.cloud:spring-cloud-config-monitor')
+
+
+    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
     compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
 //    compile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
-    compile('org.springframework.cloud:spring-cloud-config-server')
-
-    compile('org.springframework.cloud:spring-cloud-config-monitor')
-//    compile("org.springframework.cloud:spring-cloud-starter-eureka")
-// spring boot 2.0.0
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
-    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-//    compile('org.springframework.cloud:spring-cloud-sleuth-stream') deprecated in 2.0
 
     testCompile('org.springframework.boot:spring-boot-starter-test')
 }
@@ -57,4 +52,16 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
+}
+
+task local {
+    doLast {
+        bootRun { systemProperty "spring.profiles.active", "local" }
+    }
+    local.finalizedBy bootRun
+}
+
+
+bootRun {
+    systemProperties = System.properties
 }
