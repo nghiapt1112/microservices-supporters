@@ -58,9 +58,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .antMatchers(USER_URI).access(USER_EXPRESSION)
                 .antMatchers(COMPOSITE_URI).access(COMPOSITE_EXPRESSION)
                 .antMatchers(BACKEND_URI).access(BACKEND_EXPRESSION)
-                .antMatchers("/tt").permitAll()
-                .anyRequest().authenticated()
-
+                .anyRequest().permitAll()
         ;
     }
 
