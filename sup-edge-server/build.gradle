@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.1.RELEASE'
-        springCloudVersion = 'Finchley.M9'
+        springBootVersion = '2.0.2.RELEASE'
+        springCloudVersion = 'Finchley.RC2'
     }
     repositories {
         mavenCentral()
@@ -56,6 +56,10 @@ dependencies {
         exclude module: 'spring-boot-starter-web'
     }
 
+    //Zipkin
+    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
+    compile('org.springframework.cloud:spring-cloud-starter-zipkin')
+
     testCompile('org.springframework.boot:spring-boot-starter-test')
     runtime('org.springframework.boot:spring-boot-devtools')
 }
@@ -72,10 +76,6 @@ tasks.withType(JavaExec) {
         jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006"]
     }
 }
-
-//bootRun {
-//    systemProperties = System.properties
-//}
 
 bootRun {
 //    systemProperties = System.properties

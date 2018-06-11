@@ -1,10 +1,10 @@
 package com.nghiatut.mss.support.edge.web.controller;
 
+import com.nghiatut.mss.support.edge.web.dto.Bar;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import com.nghiatut.mss.support.edge.web.dto.Bar;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
@@ -34,5 +34,4 @@ public class BarController {
         bar.setId(Long.parseLong(randomNumeric(2)));
         return bar;
     }
-
 }
