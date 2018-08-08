@@ -2,29 +2,11 @@ package com.nghiatut.mss.support.edge.zuulconfig;
 
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import com.nghiatut.mss.support.edge.security.CustomOAuth2Authentication;
-import com.nghiatut.mss.support.edge.util.AbstractServiceImpl;
 import okhttp3.*;
-import okhttp3.internal.http.HttpMethod;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StreamUtils;
-import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.WebUtils;
-import reactor.core.publisher.Mono;
 
-import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
 import java.util.*;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.*;
@@ -42,9 +24,6 @@ public class CustomRoutingFilter extends ZuulFilter {
 
     @Autowired
     private ProxyRequestHelper helper;
-
-    @Autowired
-    private AbstractServiceImpl abstractService;
 
     @Override
     public String filterType() {

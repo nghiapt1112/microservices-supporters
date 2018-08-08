@@ -26,6 +26,8 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     private CustomeRemoteTokenService tokenServices;
 
 
+    @Value("${my.security.issuer-claim-verifier.url}")
+    private String issuerClaimVerifierURL;
     @Value("${my.security.oauth2.user-service.path}")
     private String USER_URI;
     @Value("${my.security.oauth2.user-service.expression}")
@@ -99,7 +101,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     @Bean
     public JwtClaimsSetVerifier issuerClaimVerifier() {
         try {
-            return new IssuerClaimVerifier(new URL("http://localhost:9999"));
+            return new IssuerClaimVerifier(new URL(issuerClaimVerifierURL));
         } catch (final MalformedURLException e) {
             throw new RuntimeException(e);
         }
