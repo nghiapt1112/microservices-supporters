@@ -1,1 +1,0 @@
-java -jar build/libs/sup-discovery-server.jar

@@ -1,1 +1,0 @@
-java -jar build/libs/sup-auth-0.0.1.jar
