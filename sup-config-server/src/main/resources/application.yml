@@ -54,5 +54,5 @@ spring:
   profiles: local
   cloud:
     config:
-      server.git.uri: file:..\..\microservices-config-server
+      server.git.uri: file:../../microservices-config-server
 
