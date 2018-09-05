@@ -1,1 +1,0 @@
-gradlew -Ddebug=1 bootRun
