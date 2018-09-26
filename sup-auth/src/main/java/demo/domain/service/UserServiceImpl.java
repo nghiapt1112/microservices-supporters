@@ -16,7 +16,7 @@ public class UserServiceImpl extends AbstractCustomRepository<User> {
         Criteria criteria = Criteria.where("username").is(name);
 
         searchQuery.addCriteria(criteria);
-        return super.find(searchQuery, User.class);
+        return super.find(searchQuery);
     }
 
 }
