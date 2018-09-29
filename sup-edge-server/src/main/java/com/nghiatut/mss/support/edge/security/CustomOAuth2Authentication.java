@@ -2,6 +2,9 @@ package com.nghiatut.mss.support.edge.security;
 
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 
+/**
+ * Contain additionalInfo to handle specific case for our organization.
+ */
 public class CustomOAuth2Authentication extends OAuth2Authentication {
     private Object additionalInfo;
 

@@ -54,6 +54,10 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
         });
     }
 
+    /**
+     * Using CustomOAuth2Authentication to response user-data
+     */
+
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();

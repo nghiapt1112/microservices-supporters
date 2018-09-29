@@ -1,6 +1,5 @@
 info:
   component: OAuth Auth Server
-
 spring:
   application:
     name: sup-auth
@@ -16,3 +15,8 @@ spring:
 #        serviceId: config-server
 #        enabled: false
       uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@nghia.ms:8888}
+
+#incase of prefer IP address than docker IP address
+#eureka:
+#  instance:
+#    ip-address: 0.0.0.0

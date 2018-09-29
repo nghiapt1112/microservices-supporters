@@ -1,12 +1,12 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.3.RELEASE'
-        springCloudVersion = 'Finchley.RELEASE'
+        springBootVersion = '2.0.5.RELEASE'
+        springCloudVersion = 'Finchley.SR1'
     }
     repositories {
         mavenCentral()
         mavenLocal()
-        maven { url "https://repo.spring.io/milestone" }
+//        maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -29,7 +29,7 @@ targetCompatibility = 1.8
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url "https://repo.spring.io/milestone" }
+//    maven { url "https://repo.spring.io/milestone" }
 }
 
 
@@ -47,8 +47,8 @@ dependencies {
     compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
     compile('org.springframework.security:spring-security-jwt:1.0.9.RELEASE')
 
-    compile('com.squareup.okhttp3:okhttp:3.9.0')
 
+    compile('com.squareup.okhttp3:okhttp:3.9.0')
     compile("com.nghia.tut.utils:nghia-libraries:1.0") {
         exclude module: 'spring-boot-starter-amqp'
         exclude module: 'spring-boot-starter-tomcat'

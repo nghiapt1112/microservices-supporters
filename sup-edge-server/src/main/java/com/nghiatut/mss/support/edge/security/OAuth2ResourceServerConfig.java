@@ -25,6 +25,11 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     @Autowired
     private CustomeRemoteTokenService tokenServices;
 
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Value("${my.security.issuer-claim-verifier.url}")
     private String issuerClaimVerifierURL;
@@ -62,6 +67,11 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .antMatchers(BACKEND_URI).access(BACKEND_EXPRESSION)
                 .anyRequest().permitAll()
         ;
+
+//        http
+//                .exceptionHandling()
+//                .authenticationEntryPoint(customAuthenticationEntryPoint)
+//                .accessDeniedHandler(customAccessDeniedHandler);
     }
 
     // JWT token store
