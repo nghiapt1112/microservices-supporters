@@ -1,5 +1,9 @@
-package com.nghiatut.mss.support.edge.security;
+package com.nghiatut.mss.support.edge.security.config;
 
+import com.nghiatut.mss.support.edge.security.CustomAccessDeniedHandler;
+import com.nghiatut.mss.support.edge.security.CustomAuthenticationEntryPoint;
+import com.nghiatut.mss.support.edge.security.CustomClaimVerifier;
+import com.nghiatut.mss.support.edge.security.CustomeRemoteTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -60,7 +64,8 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/swagger*", "/v2/**").permitAll()
+                .antMatchers("/swagger*", "/v2/**")
+                .permitAll()
                 .antMatchers(FOO_URI).access(FOO_EXPRESSION)
                 .antMatchers(USER_URI).access(USER_EXPRESSION)
                 .antMatchers(COMPOSITE_URI).access(COMPOSITE_EXPRESSION)
@@ -75,6 +80,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     }
 
     // JWT token store
+
 
     @Override
     public void configure(final ResourceServerSecurityConfigurer config) {

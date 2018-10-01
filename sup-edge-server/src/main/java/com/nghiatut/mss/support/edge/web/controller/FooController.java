@@ -18,7 +18,7 @@ public class FooController {
     }
 
     // API - read
-//    @PreAuthorize("#oauth2.hasScope('webshop') or #oauth2.hasScope('read')")
+    @PreAuthorize("isMember(#id)")
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
     @ResponseBody
     public Foo findById(@PathVariable final long id) {
@@ -26,7 +26,7 @@ public class FooController {
     }
 
     // API - write
-    @PreAuthorize("#oauth2.hasScope('foo') and #oauth2.hasScope('write')")
+    @PreAuthorize("hasAuthority('ROLE_READ')")
     @RequestMapping(method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
