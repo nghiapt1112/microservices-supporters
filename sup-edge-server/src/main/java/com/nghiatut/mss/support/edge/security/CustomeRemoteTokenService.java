@@ -1,7 +1,12 @@
 package com.nghiatut.mss.support.edge.security;
 
+import com.nghia.libraries.commons.mss.infrustructure.service.AbstractService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,11 +26,13 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.Map;
 
 
 @Service
 public class CustomeRemoteTokenService extends RemoteTokenServices {
+    private final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @Value("${my.security.oauth2.client.client-id}")
     private String CLIENT_ID;
@@ -33,17 +40,23 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
     @Value("${my.security.oauth2.client.client-secret}")
     private String CLIENT_SECRET;
 
-    @Value("${my.security.oauth2.remote-token-endpoint}")
-    private String CHECK_TOKEN_ENDPOINT_URL;
+    @Value("${my.security.oauth2.remote-token-endpoint.uri}")
+    private String CHECK_TOKEN_ENDPOINT_URI;
+
+    @Value("${my.security.oauth2.remote-token-endpoint.authServiceId}")
+    private final String AUTH_SERVICE_ID = "SUP-AUTH";
 
     private RestTemplate restTemplate;
 
     @Autowired
+    private LoadBalancerClient loadBalancerClient;
+
+    @Autowired
     private JwtAccessTokenConverter accessTokenConverter;
 
-    public CustomeRemoteTokenService() {
-        restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+    public CustomeRemoteTokenService(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+        this.restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
             @Override
             // Ignore 400
             public void handleError(ClientHttpResponse response) throws IOException {
@@ -57,7 +70,6 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
     /**
      * Using CustomOAuth2Authentication to response user-data
      */
-
     @Override
     public OAuth2Authentication loadAuthentication(String accessToken) throws AuthenticationException, InvalidTokenException {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
@@ -65,7 +77,7 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", getAuthorizationHeader(CLIENT_ID, CLIENT_SECRET));
-        Map<String, Object> map = postForMap(CHECK_TOKEN_ENDPOINT_URL, formData, headers);
+        Map<String, Object> map = postForMap(CHECK_TOKEN_ENDPOINT_URI, formData, headers);
 
         if (map.containsKey("error")) {
             logger.debug("check_token returned error: " + map.get("error"));
@@ -106,31 +118,35 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
         if (headers.getContentType() == null) {
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         }
-        @SuppressWarnings("rawtypes")
-        Map map = restTemplate.exchange(path, HttpMethod.POST,
-                new HttpEntity<MultiValueMap<String, String>>(formData, headers), Map.class).getBody();
-        @SuppressWarnings("unchecked")
-        Map<String, Object> result = map;
-        return result;
+
+        String fallbackURI = ""; // TODO: implement fallbackURI
+        URI uri = this.getServiceURL(AUTH_SERVICE_ID, fallbackURI);
+
+        StringBuilder serviceUrl = new StringBuilder(uri.toString());
+        if (!this.urlEndWithSlash(serviceUrl)) {
+            serviceUrl = serviceUrl.append("/");
+        }
+        serviceUrl.append(CHECK_TOKEN_ENDPOINT_URI);
+
+        return restTemplate.exchange(serviceUrl.toString(), HttpMethod.POST, new HttpEntity<>(formData, headers), Map.class).getBody();
     }
 
-
-    @Override
-    public void setClientId(String clientId) {
-        this.CLIENT_ID = clientId;
+    private boolean urlEndWithSlash(StringBuilder serviceUrl) {
+        return serviceUrl.lastIndexOf("/") == serviceUrl.length() - 1;
     }
 
-    @Override
-    public void setClientSecret(String clientSecret) {
-        this.CLIENT_SECRET = clientSecret;
-    }
-
-    @Override
-    public void setCheckTokenEndpointUrl(String checkTokenEndpointUrl) {
-        this.CHECK_TOKEN_ENDPOINT_URL = checkTokenEndpointUrl;
-    }
-
-    public void setAccessTokenConverter(JwtAccessTokenConverter accessTokenConverter) {
-        this.accessTokenConverter = accessTokenConverter;
+    //TODO: Duplicate code with com.nghia.libraries.commons.mss.infrustructure.service.AbstractService.java
+    protected URI getServiceURL(String serviceId, String fallbackURI) {
+        URI uri;
+        try {
+            ServiceInstance instance = this.loadBalancerClient.choose(serviceId);
+            uri = instance.getUri();
+            LOG.debug("Resolved serviceId '{}' to URL '{}'.", serviceId, uri);
+        } catch (Exception e) {
+            LOG.warn("Cannot get Instance of {}, trying to use defaultURI:", serviceId, fallbackURI);
+            LOG.error("Error cause: {}, \nError message: {}", e.getCause(), e.getMessage());
+            uri = URI.create(fallbackURI);
+        }
+        return uri;
     }
 }

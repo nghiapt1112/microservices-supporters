@@ -5,9 +5,6 @@ spring.rabbitmq:
   host: nghia.tool
   port: 5672
 
-logging:
-  level: INFO
-
 eureka:
   instance:
     preferIpAddress: true
