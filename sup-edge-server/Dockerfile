@@ -1,4 +1,4 @@
-FROM openjdk:8u162-jdk
+FROM openjdk:8-jdk
 MAINTAINER Nghia.Pham<tuannghia.sun@gmail.com>
 
 ADD ./build/libs/*.jar app.jar

@@ -1,0 +1,63 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.3.RELEASE'
+        springCloudVersion = 'Finchley.RELEASE'
+        swaggerVersion = '2.8.0'
+    }
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+
+    tasks.withType(Jar) {
+        destinationDir = file("$rootDir/build/")
+    }
+    version = '1.0'
+
+
+    tasks.withType(JavaExec) {
+        if (System.getProperty('debug', '0') == '1') {
+            jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
+        }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    dependencies {
+        ('org.springframework.boot:spring-boot-starter')
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+}
+
+
+//project(':ng_composite') {
+//    dependencies {
+//        compile("io.springfox:springfox-swagger2:${swaggerVersion}")
+//        compile("io.springfox:springfox-swagger-ui:${swaggerVersion}")
+//        compile("com.nghia.tut.utils:nghia-mail-starter:NghiaPT.RC1")
+//    }
+//}

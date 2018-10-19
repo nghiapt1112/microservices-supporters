@@ -1,0 +1,67 @@
+version: "3"
+
+services:
+  sup-discovery:
+    image: mss-discovery
+    build:
+      context: ./sup-discovery-server
+    ports:
+      - 8761:8761
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://sup-discovery:8761"]
+      interval: 30s
+      timeout: 3s
+      retries: 10
+
+#Configuration centralize
+  sup-config:
+    image: mss-config
+    build:
+      context: ./sup-config-server
+    ports:
+      - 8888:8888
+    depends_on:
+      - sup-discovery
+
+#Authentication/Authorization
+  sup-auth:
+    image: mss-auth
+    build:
+      context: ./sup-auth
+    ports:
+      - 9999:9999
+    depends_on:
+    - sup-discovery
+    - sup-config
+
+# Edge server
+  sup-edge:
+    image: mss-edge
+    build:
+      context: ./sup-edge-server
+    ports:
+      - 8765:8765
+    depends_on:
+    - sup-discovery
+    - sup-config
+#Monitor DashBoard
+  sup-monitor-dashboard:
+    image: mss-edge
+    build:
+      context: ./sup-edge-server
+    ports:
+      - 7979:7979
+    depends_on:
+    - sup-discovery
+    - sup-turbine
+    - sup-config
+
+#Turbine Stream
+  sup-turbine:
+    image: mss-edge
+    build:
+      context: ./sup-edge-server
+    ports:
+      - 8989:8989
+    depends_on:
+    - sup-config

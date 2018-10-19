@@ -1,0 +1,14 @@
+rootProject.name = 'support-services'
+
+//include 'sup-auth'
+include 'sup-discovery-server'
+include 'sup-config-server'
+include 'sup-edge-server'
+include 'sup-monitor-dashboard'
+include 'sup-turbine'
+
+project(':sup-discovery-server').name= 'ng_discovery'
+project(':sup-config-server').name= 'ng_config'
+project(':sup-edge-server').name= 'ng_edge'
+project(':sup-monitor-dashboard').name='ng_hystrix'
+project(':sup-turbine').name='ng_turbine'
