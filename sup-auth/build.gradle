@@ -1,9 +1,7 @@
-import org.gradle.api.tasks.JavaExec
-
 buildscript {
     ext {
-        springBootVersion = '2.0.5.RELEASE'
-        springCloudVersion = 'Finchley.SR1'
+        springBootVersion = '1.5.10.RELEASE'
+        springCloudVersion = 'Edgware.SR2'
     }
     repositories {
         mavenCentral()
@@ -18,7 +16,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
 
 jar {
     baseName = 'sup-auth'
@@ -74,10 +71,4 @@ tasks.withType(JavaExec) {
     if (System.getProperty('debug', '0') == '1') {
         jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=35036"]
     }
-}
-
-
-bootRun {
-//    systemProperties = System.properties
-    jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 }

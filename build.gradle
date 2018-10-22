@@ -1,23 +1,35 @@
 buildscript {
+
     ext {
-        springBootVersion = '2.0.3.RELEASE'
-        springCloudVersion = 'Finchley.RELEASE'
-        swaggerVersion = '2.8.0'
+        springBootVersion = '2.0.5.RELEASE'
+        springCloudVersion = 'Finchley.SR1'
     }
+
     repositories {
         mavenCentral()
         mavenLocal()
     }
+
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
+
 }
 
-allprojects {
+//allprojects {}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
     repositories {
         mavenCentral()
         mavenLocal()
     }
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
     tasks.withType(Jar) {
         destinationDir = file("$rootDir/build/")
@@ -30,19 +42,24 @@ allprojects {
             jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
         }
     }
-}
 
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'idea'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
-
+    configurations.compile {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude group: 'org.springframework.boot', module: 'logback-classic'
+    }
     dependencies {
-        ('org.springframework.boot:spring-boot-starter')
+        implementation('org.springframework.cloud:spring-cloud-starter')
+        implementation("org.springframework.boot:spring-boot-starter-undertow")
+        implementation('org.springframework.boot:spring-boot-starter-actuator')
+
+        // LOG4J
+        implementation('org.springframework.boot:spring-boot-starter-log4j2')
+        implementation('org.springframework.boot:spring-boot-starter-mail')
+        implementation('com.lmax:disruptor:3.4.0')
+
+        testCompile('org.springframework.boot:spring-boot-starter-test')
+        runtime('org.springframework.boot:spring-boot-devtools')
     }
 
     dependencyManagement {
@@ -53,11 +70,8 @@ subprojects {
 
 }
 
-
-//project(':ng_composite') {
-//    dependencies {
-//        compile("io.springfox:springfox-swagger2:${swaggerVersion}")
-//        compile("io.springfox:springfox-swagger-ui:${swaggerVersion}")
-//        compile("com.nghia.tut.utils:nghia-mail-starter:NghiaPT.RC1")
-//    }
+//
+//bootRun {
+////    systemProperties = System.properties
+//    jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 //}

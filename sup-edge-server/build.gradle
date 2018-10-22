@@ -1,55 +1,17 @@
-buildscript {
-    ext {
-        springBootVersion = '2.0.5.RELEASE'
-        springCloudVersion = 'Finchley.SR1'
-    }
-    repositories {
-        mavenCentral()
-        mavenLocal()
-//        maven { url "https://repo.spring.io/milestone" }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-jar {
-    baseName = 'edge-server'
-    version = '0.0.1'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-    mavenLocal()
-//    maven { url "https://repo.spring.io/milestone" }
-}
-
-
 dependencies {
-    compile("org.springframework.cloud:spring-cloud-starter-config")
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
-    compile('org.springframework.boot:spring-boot-starter-webflux')
-    compile('org.projectreactor:reactor-spring:1.0.1.RELEASE')
-
-    compile("org.springframework.boot:spring-boot-starter-undertow")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.cloud:spring-cloud-starter-config")
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+    implementation('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+    implementation('org.springframework.boot:spring-boot-starter-webflux')
+    implementation('org.projectreactor:reactor-spring:1.0.1.RELEASE')
 
     // override default security-libraries version
-    compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
-    compile('org.springframework.security:spring-security-jwt:1.0.9.RELEASE')
+    implementation('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
+    implementation('org.springframework.security:spring-security-jwt:1.0.9.RELEASE')
 
 
-    compile('com.squareup.okhttp3:okhttp:3.9.0')
-    compile("com.nghia.tut.utils:nghia-libraries:1.0") {
+    implementation('com.squareup.okhttp3:okhttp:3.9.0')
+    implementation("com.nghia.tut.utils:nghia-libraries:1.0") {
         exclude module: 'spring-boot-starter-amqp'
         exclude module: 'spring-boot-starter-tomcat'
         exclude module: 'spring-boot-starter-data-mongodb'
@@ -57,27 +19,7 @@ dependencies {
     }
 
     //Zipkin
-    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-    compile('org.springframework.cloud:spring-cloud-starter-zipkin')
+    implementation('org.springframework.cloud:spring-cloud-starter-sleuth')
+    implementation('org.springframework.cloud:spring-cloud-starter-zipkin')
 
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-    runtime('org.springframework.boot:spring-boot-devtools')
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
-}
-
-
-tasks.withType(JavaExec) {
-    if (System.getProperty('debug', '0') == '1') {
-        jvmArgs = ["-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006"]
-    }
-}
-
-bootRun {
-//    systemProperties = System.properties
-    jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 }

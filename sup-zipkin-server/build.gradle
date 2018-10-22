@@ -1,47 +1,8 @@
-buildscript {
-    ext {
-        springBootVersion = '2.0.1.RELEASE'
-        springCloudVersion = 'Edgware.SR2'
-    }
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
-
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-jar {
-    baseName = 'sup-zipkin-server'
-    version = '1.0.0'
-}
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
-
 dependencies {
-    compile('org.springframework.boot:spring-boot-starter')
-//    compile('org.springframework.cloud:spring-cloud-sleuth-zipkin-stream')
-//    compile('org.springframework.cloud:spring-cloud-starter-zipkin')
-    compile('io.zipkin.java:zipkin-server')
-    compile('io.zipkin.java:zipkin-autoconfigure-ui')
-    compile('org.springframework.cloud:spring-cloud-starter-sleuth')
-    compile('org.springframework.cloud:spring-cloud-stream-binder-rabbit')
+    implementation('io.zipkin.java:zipkin-server')
+    implementation('io.zipkin.java:zipkin-autoconfigure-ui')
+    implementation('org.springframework.cloud:spring-cloud-starter-sleuth')
+    implementation('org.springframework.cloud:spring-cloud-stream-binder-rabbit')
     runtime('io.zipkin.java:zipkin-autoconfigure-ui')
-    testCompile('org.springframework.boot:spring-boot-starter-test')
-}
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-    }
 }
