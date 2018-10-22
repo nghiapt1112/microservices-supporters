@@ -6,6 +6,7 @@ gradle-app.setting
 
 */**/out
 
-
+*.jar
+*.jar.original
 
 .idea

@@ -18,9 +18,14 @@ apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 
 jar {
-    baseName = 'sup-auth'
-    version = '0.0.1'
+    destinationDir = file("$rootDir/../infrastructure/")
+    baseName = 'mss-auth'
+    version = '1.0'
 }
+//tasks.withType(Jar) {
+//    destinationDir = file("$rootDir/../infrastructure/")
+//}
+//
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

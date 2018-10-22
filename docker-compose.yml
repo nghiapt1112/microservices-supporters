@@ -4,7 +4,8 @@ services:
   sup-discovery:
     image: mss-discovery
     build:
-      context: ./sup-discovery-server
+      context: ./infrastructure
+      dockerfile: mss-discovery
     ports:
       - 8761:8761
     healthcheck:
@@ -17,7 +18,8 @@ services:
   sup-config:
     image: mss-config
     build:
-      context: ./sup-config-server
+      context: ./infrastructure
+      dockerfile: mss-config
     ports:
       - 8888:8888
     depends_on:
@@ -27,7 +29,8 @@ services:
   sup-auth:
     image: mss-auth
     build:
-      context: ./sup-auth
+      context: ./infrastructure
+      dockerfile: mss-auth
     ports:
       - 9999:9999
     depends_on:
@@ -38,7 +41,8 @@ services:
   sup-edge:
     image: mss-edge
     build:
-      context: ./sup-edge-server
+      context: ./infrastructure
+      dockerfile: mss-edge
     ports:
       - 8765:8765
     depends_on:
@@ -46,9 +50,10 @@ services:
     - sup-config
 #Monitor DashBoard
   sup-monitor-dashboard:
-    image: mss-edge
+    image: mss-hystrix
     build:
-      context: ./sup-edge-server
+      context: ./infrastructure
+      dockerfile: mss-hystrix
     ports:
       - 7979:7979
     depends_on:
@@ -58,9 +63,10 @@ services:
 
 #Turbine Stream
   sup-turbine:
-    image: mss-edge
+    image: mss-turbine
     build:
-      context: ./sup-edge-server
+      context: ./infrastructure
+      dockerfile: mss-turbine
     ports:
       - 8989:8989
     depends_on:
