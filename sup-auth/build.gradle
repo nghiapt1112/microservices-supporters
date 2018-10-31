@@ -48,6 +48,9 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-security")
     compile('org.springframework.security.oauth:spring-security-oauth2:2.2.1.RELEASE')
 
+    compile('org.springframework.boot:spring-boot-starter-redis:1.4.7.RELEASE')
+
+
 //Zipkin
     compile('org.springframework.cloud:spring-cloud-starter-sleuth:2.0.0.M9')
     compile('org.springframework.cloud:spring-cloud-starter-zipkin:2.0.0.M9')
