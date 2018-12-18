@@ -1,6 +1,6 @@
 package demo.domain.service;
 
-import com.nghia.libraries.commons.mss.infrustructure.repository.impl.AbstractCustomRepository;
+import com.nghia.libraries.mongo.infrustructure.repository.impl.AbstractCustomRepository;
 import demo.domain.User;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
