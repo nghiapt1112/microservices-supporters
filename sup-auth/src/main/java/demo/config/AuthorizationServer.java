@@ -4,11 +4,13 @@ import demo.domain.Roles;
 import demo.domain.Tenant;
 import demo.domain.TokenUserInfo;
 import demo.domain.service.TenantServiceImpl;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
@@ -18,6 +20,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -25,7 +28,10 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +52,7 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     private JedisConnectionFactory jedisConnectionFactory;
 
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
 //        endpoints
 //                .tokenServices(tokenServices())
 //                .authenticationManager(this.authenticationManager); // DCC way
@@ -54,15 +60,14 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 //        endpoints.pathMapping("/oauth/check_token", "/my/oauth/check_token");
 //        endpoints.pathMapping("/my/oauth/check_token", "/oauth/check_token");
 
-        final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), accessTokenConverter()));
         endpoints.tokenStore(tokenStore())
-                .tokenEnhancer(tokenEnhancerChain)
+                .tokenEnhancer(tokenEnhancer())
+                .accessTokenConverter(accessTokenConverter())
                 .authenticationManager(authenticationManager);
     }
 
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         oauthServer.checkTokenAccess("permitAll()");
 //        oauthServer.allowFormAuthenticationForClients();
     }
@@ -101,16 +106,16 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
         ;
     }
 
-    @Bean
-    @Primary
-    public DefaultTokenServices defaultTokenServices() {
-        DefaultTokenServices tokenServices = new DefaultTokenServices();
-        tokenServices.setTokenStore(tokenStore());
-        tokenServices.setSupportRefreshToken(true);
-        tokenServices.setRefreshTokenValiditySeconds(345600); // 15 days
-        tokenServices.setAccessTokenValiditySeconds(86400); // 1 days
-        return tokenServices;
-    }
+//    @Bean
+//    @Primary
+//    public DefaultTokenServices defaultTokenServices() {
+//        DefaultTokenServices tokenServices = new DefaultTokenServices();
+//        tokenServices.setTokenStore(tokenStore());
+//        tokenServices.setSupportRefreshToken(true);
+//        tokenServices.setRefreshTokenValiditySeconds(345600); // 15 days
+//        tokenServices.setAccessTokenValiditySeconds(86400); // 1 days
+//        return tokenServices;
+//    }
 
     @Bean
     public TokenStore tokenStore() {
@@ -119,21 +124,34 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
     @Bean
     public JwtAccessTokenConverter accessTokenConverter() {
+//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+//        converter.setSigningKey("123");
+//        return converter;
+
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("123");
+        converter.setAccessTokenConverter(new CustomAccessTokenConverter());
+        Resource resource = new ClassPathResource("public.txt");
+        String publicKey = null;
+        try {
+            publicKey = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        converter.setVerifierKey(publicKey);
         return converter;
+
     }
 
-    @SuppressWarnings("unused")
-    @Bean
-    public JwtAccessTokenConverter keyStoreAccessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("nghia_key");
-
-        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("nghiakey.jks"), "nghiapass".toCharArray());
-        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("nghiatestalias"));
-        return converter;
-    }
+//    @SuppressWarnings("unused")
+//    @Bean
+//    public JwtAccessTokenConverter keyStoreAccessTokenConverter() {
+//        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+//        converter.setSigningKey("nghia_key");
+//
+//        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("nghiakey.jks"), "nghiapass".toCharArray());
+//        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("nghiatestalias"));
+//        return converter;
+//    }
 
     public TokenEnhancer tokenEnhancer() {
         return (accessToken, authentication) -> {
@@ -170,4 +188,13 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
 }
 
+class CustomAccessTokenConverter extends DefaultAccessTokenConverter {
 
+    @Override
+    public OAuth2Authentication extractAuthentication(Map<String, ?> claims) {
+        OAuth2Authentication authentication = super.extractAuthentication(claims);
+        authentication.setDetails(claims);
+        return authentication;
+    }
+
+}

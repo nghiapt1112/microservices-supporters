@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 
@@ -20,7 +22,7 @@ public class BarController {
 
     // API - read
     @PreAuthorize("#oauth2.hasScope('webshop') or #oauth2.hasScope('read')")
-    @RequestMapping(method = RequestMethod.GET, value = "/{id}")
+    @GetMapping(value = "/{id}")
     public Bar findById(@PathVariable final long id) {
         LOGGER.info("Finding bar with id: {}", id);
         return new Bar(Long.parseLong(randomNumeric(2)), randomAlphabetic(4));
@@ -28,10 +30,15 @@ public class BarController {
 
     // API - write
     @PreAuthorize("#oauth2.hasScope('bar') and #oauth2.hasScope('write') and hasRole('ROLE_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST)
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Bar create(@RequestBody final Bar bar) {
         bar.setId(Long.parseLong(randomNumeric(2)));
         return bar;
+    }
+
+    @GetMapping("/check-te")
+    public String checkAuthorization() {
+        return "test : " + UUID.randomUUID().toString();
     }
 }
