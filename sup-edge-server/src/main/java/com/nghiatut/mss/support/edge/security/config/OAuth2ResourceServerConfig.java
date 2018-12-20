@@ -1,8 +1,5 @@
 package com.nghiatut.mss.support.edge.security.config;
 
-import com.nghiatut.mss.support.edge.security.CustomAccessDeniedHandler;
-import com.nghiatut.mss.support.edge.security.CustomAuthenticationEntryPoint;
-import com.nghiatut.mss.support.edge.security.CustomClaimVerifier;
 import com.nghiatut.mss.support.edge.security.CustomeRemoteTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,12 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.*;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Arrays;
+import org.springframework.security.oauth2.provider.expression.OAuth2WebSecurityExpressionHandler;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 @Configuration
 @EnableResourceServer
@@ -30,10 +23,7 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
     private CustomeRemoteTokenService tokenServices;
 
     @Autowired
-    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
-
-    @Autowired
-    private CustomAccessDeniedHandler customAccessDeniedHandler;
+    private OAuth2WebSecurityExpressionHandler oAuth2WebSecurityExpressionHandler;
 
     @Value("${my.security.issuer-claim-verifier.url}")
     private String issuerClaimVerifierURL;
@@ -70,62 +60,30 @@ public class OAuth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
                 .antMatchers(USER_URI).access(USER_EXPRESSION)
                 .antMatchers(COMPOSITE_URI).access(COMPOSITE_EXPRESSION)
                 .antMatchers(BACKEND_URI).access(BACKEND_EXPRESSION)
+                .antMatchers("/bars/check-te*").access("@authorizationService.isValid(authentication)")
                 .anyRequest().permitAll()
         ;
-
-//        http
-//                .exceptionHandling()
-//                .authenticationEntryPoint(customAuthenticationEntryPoint)
-//                .accessDeniedHandler(customAccessDeniedHandler);
     }
 
-    // JWT token store
-
-
+    /**
+     * Register CustomTokenService as default, or can using @Primary as primary bean for tokenService
+     *
+     * @param config
+     */
     @Override
     public void configure(final ResourceServerSecurityConfigurer config) {
-        config.tokenServices(tokenServices);
+        config.tokenServices(tokenServices).expressionHandler(oAuth2WebSecurityExpressionHandler);
     }
 
+    /**
+     * When using remote token service, we don't need to do much, cause by Auth-Server will checkValid(), parseToken(),
+     * and every thing else to make our token valid to use.
+     *
+     * @return
+     */
     @Bean
-    public TokenStore tokenStore() {
-        return new JwtTokenStore(accessTokenConverter());
-    }
-
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("123");
-//        converter.setJwtClaimsSetVerifier(jwtClaimsSetVerifier());
-//
-//        final Resource resource = new ClassPathResource("public.txt");
-//        String publicKey = null;
-//        try {
-//            publicKey = IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
-//        } catch (final IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//        converter.setVerifierKey(publicKey);
-        return converter;
-    }
-
-    @Bean
-    public JwtClaimsSetVerifier jwtClaimsSetVerifier() {
-        return new DelegatingJwtClaimsSetVerifier(Arrays.asList(issuerClaimVerifier(), customJwtClaimVerifier()));
-    }
-
-    @Bean
-    public JwtClaimsSetVerifier issuerClaimVerifier() {
-        try {
-            return new IssuerClaimVerifier(new URL(issuerClaimVerifierURL));
-        } catch (final MalformedURLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Bean
-    public JwtClaimsSetVerifier customJwtClaimVerifier() {
-        return new CustomClaimVerifier();
+    public JwtAccessTokenConverter remoteAccessTokenConverter() {
+        return new JwtAccessTokenConverter();
     }
 
 }

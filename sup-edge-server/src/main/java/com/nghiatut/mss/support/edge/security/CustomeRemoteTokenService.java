@@ -1,6 +1,5 @@
 package com.nghiatut.mss.support.edge.security;
 
-import com.nghia.libraries.commons.mss.infrustructure.service.AbstractService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
@@ -27,6 +25,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.util.Base64;
 import java.util.Map;
 
 
@@ -50,9 +49,9 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
 
     @Autowired
     private LoadBalancerClient loadBalancerClient;
-
+    //
     @Autowired
-    private JwtAccessTokenConverter accessTokenConverter;
+    private JwtAccessTokenConverter remoteAccessTokenConverter;
 
     public CustomeRemoteTokenService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -90,7 +89,7 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
             throw new InvalidTokenException(accessToken);
         }
 
-        OAuth2Authentication authentication = accessTokenConverter.extractAuthentication(map);
+        OAuth2Authentication authentication = remoteAccessTokenConverter.extractAuthentication(map);
 
 
         CustomOAuth2Authentication customOAuth2Authentication = new CustomOAuth2Authentication(authentication);
@@ -108,7 +107,7 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
 
         String creds = String.format("%s:%s", clientId, clientSecret);
         try {
-            return "Basic " + new String(Base64.encode(creds.getBytes("UTF-8")));
+            return "Basic " + new String(Base64.getEncoder().encode(creds.getBytes("UTF-8")));
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException("Could not convert String");
         }
