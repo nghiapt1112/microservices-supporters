@@ -121,17 +121,9 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     public JwtAccessTokenConverter accessTokenConverter() {
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setSigningKey("123");
-        return converter;
-    }
 
-    @SuppressWarnings("unused")
-    @Bean
-    public JwtAccessTokenConverter keyStoreAccessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("nghia_key");
-
-        final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("nghiakey.jks"), "nghiapass".toCharArray());
-        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("nghiatestalias"));
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("mytest.jks"), "mypass".toCharArray());
+        converter.setKeyPair(keyStoreKeyFactory.getKeyPair("mytest"));
         return converter;
     }
 
