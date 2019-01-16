@@ -16,7 +16,7 @@
 
 spring:
   application:
-    name: monitor-dashboard
+    name: sup-hystrix
   cloud:
     config:
       uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@nghia.ms:8888}
