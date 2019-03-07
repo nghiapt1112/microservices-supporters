@@ -1,0 +1,21 @@
+dependencies {
+//    implementation("org.springframework.cloud:spring-cloud-starter-config")
+//    implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+
+    compile('org.springframework.boot:spring-boot-starter-amqp')
+
+
+
+    implementation("com.nghia.tut.utils:nghia-libraries:1.0") {
+        exclude module: 'spring-boot-starter-amqp'
+        exclude module: 'spring-boot-starter-tomcat'
+        exclude module: 'spring-boot-starter-data-mongodb'
+        exclude module: 'spring-boot-starter-web'
+    }
+
+}
+tasks.withType(JavaExec) {
+    if (System.getProperty('debug', '0') == '1') {
+        jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5006'
+    }
+}

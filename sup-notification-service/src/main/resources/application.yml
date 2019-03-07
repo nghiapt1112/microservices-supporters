@@ -1,0 +1,11 @@
+management.endpoints.web.exposure.include: "*"
+spring:
+  rabbitmq:
+    addresses: nghia.tool
+    port: 5672
+    virtual-host: nghia.stream.local
+
+mss.rabbitmq:
+  email:
+    direct: direct.email
+    queue: emailNotify
