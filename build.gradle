@@ -36,13 +36,6 @@ subprojects {
     }
     version = '1.0'
 
-
-    tasks.withType(JavaExec) {
-        if (System.getProperty('debug', '0') == '1') {
-            jvmArgs '-Xdebug', '-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005'
-        }
-    }
-
     configurations.compile {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
