@@ -1,6 +1,5 @@
 package demo.domain;
 
-import com.nghia.libraries.commons.mss.infrustructure.domain.AbstractObject;
 
 public class Tenant extends AbstractObject {
 

@@ -1,7 +1,6 @@
 package demo.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nghia.libraries.commons.mss.infrustructure.domain.AbstractEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -37,8 +37,13 @@ dependencies {
     compile("org.springframework.cloud:spring-cloud-starter-config")
     compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 
+    compile("org.springframework.boot:spring-boot-starter")
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-actuator")
+    compile("org.apache.commons:commons-collections4:4.1")
+    compile("commons-io:commons-io:2.6")
+    compile("org.apache.commons:commons-lang3:3.7")
+    compile('org.springframework.boot:spring-boot-starter-data-mongodb')
 
 //    compile('org.springframework.cloud:spring-cloud-starter-bus-amqp')
     compile("org.springframework.cloud:spring-cloud-starter-oauth2")
@@ -53,12 +58,12 @@ dependencies {
 //    compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix:2.0.0.M8')
 //    compile('org.springframework.cloud:spring-cloud-netflix-hystrix-stream:2.0.0.M8')
 
-    compile("com.nghia.tut.utils:nghia-libraries:1.0") {
-        exclude module: 'spring-boot-starter-amqp'
-        exclude module: 'spring-boot-starter-tomcat'
-//        exclude module: 'spring-boot-starter-data-mongodb'
-        exclude module: 'spring-boot-starter-web'
-    }
+//    compile("com.nghia.tut.utils:nghia-libraries:1.0") {
+//        exclude module: 'spring-boot-starter-amqp'
+//        exclude module: 'spring-boot-starter-tomcat'
+////        exclude module: 'spring-boot-starter-data-mongodb'
+//        exclude module: 'spring-boot-starter-web'
+//    }
     runtime('org.springframework.boot:spring-boot-devtools')
 }
 

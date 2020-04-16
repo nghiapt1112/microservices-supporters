@@ -18,5 +18,4 @@ public class UserController {
         return this.userService.createOne(user);
     }
 
-
 }
