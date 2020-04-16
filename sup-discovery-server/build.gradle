@@ -1,47 +1,26 @@
-buildscript {
-    ext {
-        springBootVersion = '2.0.3.RELEASE'
-        springCloudVersion = 'Finchley.RELEASE'
-    }
-    repositories {
-        mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
+plugins {
+    id 'org.springframework.boot' version '2.2.6.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'org.springframework.boot'
-apply plugin: 'io.spring.dependency-management'
-
-jar {
-    baseName = 'discovery-server'
-    version = '0.0.1'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+group = 'se.callista.microservises.support.discovery'
+version = '0.0.1'
+sourceCompatibility = '1.8'
 
 repositories {
     mavenCentral()
-    mavenLocal()
-    maven { url "https://repo.spring.io/snapshot" }
-    maven { url "https://repo.spring.io/milestone" }
+}
+
+ext {
+    set('springCloudVersion', "Hoxton.SR3")
 }
 
 dependencies {
-    compile("org.springframework.boot:spring-boot-starter-undertow")
-    compile("org.springframework.boot:spring-boot-starter-actuator")
-
-    compile('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'){
-        exclude module: 'org.springframework.boot:spring-boot-starter-web'
-    }
-
-
+//	compile("org.springframework.boot:spring-boot-starter-undertow")
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-server'
+//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
 }
 
 dependencyManagement {
@@ -49,7 +28,6 @@ dependencyManagement {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
 }
-
 
 bootRun {
     systemProperties = System.properties
