@@ -15,4 +15,4 @@ spring:
 #      discovery:
 #        serviceId: config-server
 #        enabled: false
-      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@nghia.ms:8888}
+      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@192.168.66.72:8888}
