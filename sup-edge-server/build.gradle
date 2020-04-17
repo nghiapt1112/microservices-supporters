@@ -27,9 +27,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-config")
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
-//    compile('org.springframework.boot:spring-boot-starter-webflux')
-//    compile('org.projectreactor:reactor-spring:1.0.1.RELEASE')
-//    compile("org.springframework.boot:spring-boot-starter-undertow")
+
     implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // override default security-libraries version
@@ -43,19 +41,10 @@ dependencies {
     implementation("commons-io:commons-io:2.6")
     implementation("org.apache.commons:commons-lang3:3.7")
 
-//    compile("com.nghia.tut.utils:nghia-libraries:1.0") {
-//        exclude module: 'spring-boot-starter-amqp'
-//        exclude module: 'spring-boot-starter-tomcat'
-//        exclude module: 'spring-boot-starter-data-mongodb'
-//        exclude module: 'spring-boot-starter-web'
-//    }
 
     //Zipkin
     implementation('org.springframework.cloud:spring-cloud-starter-sleuth')
     implementation('org.springframework.cloud:spring-cloud-starter-zipkin')
-
-//    testCompile('org.springframework.boot:spring-boot-starter-test')
-//    runtime('org.springframework.boot:spring-boot-devtools')
 }
 
 dependencyManagement {
@@ -69,6 +58,6 @@ test {
 }
 
 bootRun {
-//    systemProperties = System.properties
+    systemProperties = System.properties
     jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 }

@@ -33,7 +33,7 @@ public class CustomeRemoteTokenService extends RemoteTokenServices {
     @Value("${my.security.oauth2.client.client-secret}")
     private String CLIENT_SECRET;
 
-    @Value("${my.security.oauth2.remote-token-endpoint}")
+    @Value("${my.security.oauth2.remote-token-endpoint.uri}")
     private String CHECK_TOKEN_ENDPOINT_URL;
 
     private RestTemplate restTemplate;
