@@ -47,7 +47,7 @@ eureka:
 spring:
   rabbitmq:
     virtual-host: /
-    host: 192.168.6.72
+    host: 192.168.66.72
     port: 5672
 
 ---
