@@ -32,17 +32,17 @@ eureka:
     serviceUrl:
       defaultZone: http://192.168.9.0:8761/eureka/
 
-logging:
-  level:
-    root: WARN
-    se.callista: INFO
+#logging:
+#  level:
+#    root: WARN
+#    se.callista: INFO
 
-    org.springframework.amqp.rabbit.listener.BlockingQueueConsumer: INFO
-    org.apache.catalina.session.ManagerBase: INFO
+#    org.springframework.amqp.rabbit.listener.BlockingQueueConsumer: INFO
+#    org.apache.catalina.session.ManagerBase: INFO
 
     # Set INFO to see the allocated port
-    org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
-    org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO
+#    org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
+#    org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO
 
 spring:
   rabbitmq:
@@ -56,5 +56,5 @@ spring:
   profiles: local
   cloud:
     config:
-      server.git.uri: file:..\..\microservices-config-server
+      server.git.uri: file:../../microservices-config-server
 
