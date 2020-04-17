@@ -30,11 +30,7 @@ eureka:
     preferIpAddress: true
   client:
     serviceUrl:
-      defaultZone: http://nghia.ms:8761/eureka/
-
-spring.rabbitmq:
-  host: nghia.tool
-  port: 5672
+      defaultZone: http://192.168.9.0:8761/eureka/
 
 logging:
   level:
@@ -48,6 +44,11 @@ logging:
     org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
     org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO
 
+spring:
+  rabbitmq:
+    virtual-host: /
+    host: 192.168.6.72
+    port: 5672
 
 ---
 # For deployment in Docker containers
