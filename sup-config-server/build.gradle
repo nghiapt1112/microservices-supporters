@@ -24,17 +24,17 @@ ext {
 }
 
 dependencies {
-    implementation('org.springframework.boot:spring-boot-starter')
+    implementation('org.springframework.boot:spring-boot-starter-web')
     implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
 
     implementation('org.springframework.cloud:spring-cloud-config-server')
-    implementation('org.springframework.cloud:spring-cloud-config-monitor')
+    implementation('org.springframework.cloud:spring-cloud-config-monitor')  // monitor file
 
 
-    implementation('org.springframework.cloud:spring-cloud-starter-sleuth')
-    implementation('org.springframework.cloud:spring-cloud-starter-bus-amqp')
-//    compile("org.springframework.cloud:spring-cloud-starter-stream-rabbit")
+//    implementation('org.springframework.cloud:spring-cloud-starter-sleuth')
+//    implementation('org.springframework.cloud:spring-cloud-starter-bus-amqp') // connect kieu bus-amqp
+    implementation("org.springframework.cloud:spring-cloud-starter-stream-rabbit") // driver rabbitmq
 
 }
 
@@ -48,11 +48,3 @@ bootRun {
     systemProperties = System.properties
     jvmArgs = ["-Dspring.output.ansi.enabled=ALWAYS"]
 }
-
-
-//task local {
-  //  doLast {
-    //    bootRun { systemProperty "spring.profiles.active", "local" }
-   // }
-    //local.finalizedBy bootRun
-//}
