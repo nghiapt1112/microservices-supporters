@@ -6,8 +6,8 @@ server:
     #key-password: password
 
 #security.basic.enabled: false
-spring.security.user.name: uname
-spring.security.user.password: pwd
+spring.security.user.name: user
+spring.security.user.password: password
 
 # Configuration of a local Git-repo for development locally without Docker
 # note that we are still using git; We just access the git-repo via file: protocol
