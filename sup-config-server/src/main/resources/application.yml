@@ -5,8 +5,9 @@ server:
 #    key-store-password: password
     #key-password: password
 
-security.basic.enabled: false
-
+#security.basic.enabled: false
+spring.security.user.name: uname
+spring.security.user.password: pwd
 
 # Configuration of a local Git-repo for development locally without Docker
 # note that we are still using git; We just access the git-repo via file: protocol
@@ -15,7 +16,7 @@ security.basic.enabled: false
 #spring.cloud.config.server.monitor.github.enabled: true
 spring.cloud.config.server.git:
 #  uri: https://github.com/nghiapt1112/microservices-config-server.git
-  uri: file:///${PWD}/../../../config-server/
+  uri: file:../../microservices-config-server
 #  repos:
 #    - patterns: dev
 #      uri: https://github.com/nghialunhaiha/microservice-configserver.git
@@ -44,11 +45,11 @@ eureka:
 #    org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainer: INFO
 #    org.springframework.boot.context.embedded.undertow.UndertowEmbeddedServletContainer: INFO
 
-spring:
-  rabbitmq:
-    virtual-host: /
-    host: 192.168.66.72
-    port: 5672
+#spring:
+#  rabbitmq:
+#    virtual-host: /
+#    host: 192.168.66.72
+#    port: 5672
 
 ---
 # For deployment in Docker containers
@@ -58,3 +59,8 @@ spring:
     config:
       server.git.uri: file:../../microservices-config-server
 
+---
+spring:
+  profiles: dev
+spring.cloud.config.server.git.uri: url_link
+spring.cloud.config.server.git.clone-on-start: true
