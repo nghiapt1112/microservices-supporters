@@ -1,5 +1,6 @@
 server:
   port: 8888
+spring.output.ansi.enabled: ALWAYS
 #  ssl:
     #key-store: classpath:server.jks
 #    key-store-password: password
@@ -31,7 +32,7 @@ eureka:
     preferIpAddress: true
   client:
     serviceUrl:
-      defaultZone: http://192.168.9.0:8761/eureka/
+      defaultZone: http://eureka.demomicroservices.com/eureka/
 
 #logging:
 #  level:

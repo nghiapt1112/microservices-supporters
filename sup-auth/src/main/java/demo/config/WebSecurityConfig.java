@@ -31,9 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-
                 .antMatchers("/login").permitAll()
-                .antMatchers("/uaa/user/**", "/user/**").permitAll()
+//                .antMatchers("/uaa/user/**", "/user/**").permitAll()
                 .antMatchers("/my/oauth/check_token/**").permitAll()
                 .antMatchers("/tk/oauth/token/revokeById/**").permitAll()
                 .antMatchers("/tk/tokens/**").permitAll()
